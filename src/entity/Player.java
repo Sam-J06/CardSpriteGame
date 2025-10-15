@@ -55,7 +55,8 @@ public class Player extends Entity {
                     // sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/king_s/king_"
                     // + i + "_" + j + ".png"));
 
-                    sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/jester.png"));
+                    // sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/jester.png"));
+                    sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/cards/Card_1.png"));
                 }
             }
 
