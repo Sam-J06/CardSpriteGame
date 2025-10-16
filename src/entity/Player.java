@@ -52,11 +52,12 @@ public class Player extends Entity {
 
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
-                    // sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/king_s/king_"
-                    // + i + "_" + j + ".png"));
+                    // sprite[i][j] = ImageIO.read(getClass().getResourceAsStream(
+                    //     "/res/king_s/king_" + i + "_" + j + ".png"));
 
-                    // sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/jester.png"));
-                    sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/cards/Card_1.png"));
+                    sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/jester.png"));
+                    // sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/cards/"
+                    //     + "Card_1.png"));
                 }
             }
 

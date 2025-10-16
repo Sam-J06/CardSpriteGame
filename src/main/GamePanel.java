@@ -1,6 +1,6 @@
 package main;
 
-import cards.Card;
+import cards.Card; //TODO: change
 import entity.Player;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,8 +25,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public Player player = new Player(this, keyH);
 
+    //TODO: change.
     public Card[] allcards = new Card[howmany]; 
-    
     {
         int row = 0;
         int column = 0;
@@ -40,13 +40,8 @@ public class GamePanel extends JPanel implements Runnable {
                 row++;
             }
         }
-    
-
-        
     }
-
-    
-    
+    //what even is this??
 
     // public int frame = 0;
 
@@ -117,15 +112,14 @@ public class GamePanel extends JPanel implements Runnable {
      * Updates other elements such as the player, enemies and cards.
      */
     public void update() {
-        //TODO: add entity updates here.
 
         player.update();
 
-        
-
+        //iterates through all cards to update. TODO: change.
         for (int i = 0; i < howmany; i++) {
             allcards[i].update(player.x, player.y);
         }
+
     }
 
     /**
@@ -138,6 +132,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         //TODO: add entity draw methods.
 
+        //iterates through all cards to draw. TODO: change.
         for (int i = 0; i < howmany; i++) {
             allcards[i].draw(g2);
         }
