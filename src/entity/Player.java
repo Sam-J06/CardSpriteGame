@@ -26,8 +26,13 @@ public class Player extends Entity {
         this.keyH = keyH;
 
         //update for each sprite
-        spriteWidth = 17 * gp.scale;
-        spriteHeight = 25 * gp.scale;
+
+        //jester values
+        // spriteWidth = 17 * gp.scale;
+        // spriteHeight = 25 * gp.scale;
+
+        spriteWidth = 27 * gp.scale;
+        spriteHeight = 55 * gp.scale;
 
         setDefaultValues();
         getPlayerImage();
@@ -50,12 +55,12 @@ public class Player extends Entity {
         
         try {
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 2; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
-                    // sprite[i][j] = ImageIO.read(getClass().getResourceAsStream(
-                    //     "/res/king_s/king_" + i + "_" + j + ".png"));
+                    sprite[i][j] = ImageIO.read(getClass().getResourceAsStream(
+                        "/res/king_s/king_" + i + "_" + j + ".png"));
 
-                    sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/jester.png"));
+                    // sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/jester.png"));
                     // sprite[i][j] = ImageIO.read(getClass().getResourceAsStream("/res/cards/"
                     //     + "Card_1.png"));
                 }
@@ -87,8 +92,10 @@ public class Player extends Entity {
                 moveDirection = 1;
             } else if (keyH.leftPressed) {
                 moveDirection = 2;
+                drawDirection = 2;
             } else if (keyH.rightPressed) {
                 moveDirection = 3;
+                drawDirection = 3;
             }
 
             if (!collisionOn) {
@@ -119,7 +126,8 @@ public class Player extends Entity {
         BufferedImage image = null;
 
 
-        image = sprite[moveDirection][spriteNum];
+        // image = sprite[moveDirection][spriteNum];
+        image = sprite[(moveDirection % 2) + 2][spriteNum];
 
         g2.drawImage(image, x - spriteWidth / 2, y - spriteHeight / 2,
             spriteWidth, spriteHeight, null);
