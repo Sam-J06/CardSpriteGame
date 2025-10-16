@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.RenderingHints.Key;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -15,10 +16,10 @@ public class KeyHandler implements KeyListener {
 
     public boolean escape;
     public boolean space;
+    public boolean cPressed;
     
     @Override
     public void keyTyped(KeyEvent e) {
-        
     }
 
     @Override
@@ -44,6 +45,9 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_SPACE) {
             space = true;
         }
+        if (code == KeyEvent.VK_C) {
+            cPressed = true;
+        }
     }
 
     @Override
@@ -68,6 +72,9 @@ public class KeyHandler implements KeyListener {
         }
         if (code == KeyEvent.VK_SPACE) {
             space = false;
+        }
+        if (code == KeyEvent.VK_C) {
+            cPressed = false;
         }
         
     }

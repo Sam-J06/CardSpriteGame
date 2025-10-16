@@ -14,15 +14,15 @@ public class App {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         
-        GamePanel blah = new GamePanel();
-        frame.add(blah);
+        GamePanel gp = new GamePanel();
+        frame.add(gp);
         frame.pack();
 
         frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);
 
-        blah.startGameThread();
+        gp.startGameThread();
 
     }
 }
