@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 public class App {
     public static void main(String[] args) throws Exception {
 
-        //Hello Khion
+        //Hello Sam
 
         JFrame frame = new JFrame("CBL card game draft");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
