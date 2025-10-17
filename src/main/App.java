@@ -3,12 +3,10 @@ package main;
 import javax.swing.JFrame;
 
 /**
- * main file.
+ * This is the main file. The frame is created here. GamePanel is then created and updated.
  */
 public class App {
     public static void main(String[] args) throws Exception {
-
-        //Hello Sam
 
         JFrame frame = new JFrame("CBL card game draft");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

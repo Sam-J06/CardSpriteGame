@@ -5,20 +5,25 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * Registers user input for WASD keys.
+ * Registers user input for keys which are pressed..
  */
 public class KeyHandler implements KeyListener {
 
+    //these bools signify which key is pressed.
+
+    //wasd
     public boolean upPressed;
     public boolean downPressed;
     public boolean leftPressed;
     public boolean rightPressed;
 
+    //other
     public boolean escapePressed;
     public boolean spacePressed;
     public boolean cPressed;
     public boolean mPressed;
 
+    //arrow
     public boolean uPressed;
     public boolean dPressed;
     public boolean lPressed;
@@ -72,6 +77,7 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    //checks if key is no longer pressed.
     @Override
     public void keyReleased(KeyEvent e) {
 
