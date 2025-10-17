@@ -1,6 +1,6 @@
 package main;
 
-import java.awt.RenderingHints.Key;
+// import java.awt.RenderingHints.Key; TODO: Read up on this!
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -14,9 +14,16 @@ public class KeyHandler implements KeyListener {
     public boolean leftPressed;
     public boolean rightPressed;
 
-    public boolean escape;
-    public boolean space;
+    public boolean escapePressed;
+    public boolean spacePressed;
     public boolean cPressed;
+    public boolean mPressed;
+
+    public boolean uPressed;
+    public boolean dPressed;
+    public boolean lPressed;
+    public boolean rPressed;
+
     
     @Override
     public void keyTyped(KeyEvent e) {
@@ -40,13 +47,28 @@ public class KeyHandler implements KeyListener {
             rightPressed = true;
         }
         if (code == KeyEvent.VK_ESCAPE) {
-            escape = true;
+            escapePressed = true;
         }
         if (code == KeyEvent.VK_SPACE) {
-            space = true;
+            spacePressed = true;
         }
         if (code == KeyEvent.VK_C) {
             cPressed = true;
+        }
+        if (code == KeyEvent.VK_UP) {
+            uPressed = true;
+        }
+        if (code == KeyEvent.VK_DOWN) {
+            dPressed = true;
+        }
+        if (code == KeyEvent.VK_LEFT) {
+            lPressed = true;
+        }
+        if (code == KeyEvent.VK_RIGHT) {
+            rPressed = true;
+        }
+        if (code == KeyEvent.VK_M) {
+            mPressed = true;
         }
     }
 
@@ -68,13 +90,28 @@ public class KeyHandler implements KeyListener {
             rightPressed = false;
         }
         if (code == KeyEvent.VK_ESCAPE) {
-            escape = false;
+            escapePressed = false;
         }
         if (code == KeyEvent.VK_SPACE) {
-            space = false;
+            spacePressed = false;
         }
         if (code == KeyEvent.VK_C) {
             cPressed = false;
+        }
+        if (code == KeyEvent.VK_UP) {
+            uPressed = false;
+        }
+        if (code == KeyEvent.VK_DOWN) {
+            dPressed = false;
+        }
+        if (code == KeyEvent.VK_LEFT) {
+            lPressed = false;
+        }
+        if (code == KeyEvent.VK_RIGHT) {
+            rPressed = false;
+        }
+        if (code == KeyEvent.VK_M) {
+            mPressed = false;
         }
         
     }

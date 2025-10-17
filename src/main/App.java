@@ -13,6 +13,7 @@ public class App {
         JFrame frame = new JFrame("CBL card game draft");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
+        //TODO figure out how to make game fullscreen or change scale by user.
         
         GamePanel gp = new GamePanel();
         frame.add(gp);

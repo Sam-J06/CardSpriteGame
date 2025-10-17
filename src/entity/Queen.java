@@ -9,7 +9,7 @@ import main.KeyHandler;
 /**
  * All player information and methods.
  */
-public class Player extends Entity {
+public class Queen extends Entity {
 
     GamePanel gp;
     KeyHandler keyH;
@@ -17,13 +17,15 @@ public class Player extends Entity {
     public int y;
     public int spriteHeight;
     public int spriteWidth;
+    Player player;
 
     /**
      * Constructor.
      */
-    public Player(GamePanel gp, KeyHandler keyH) {
+    public Queen(Player player, GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
+        this.player = player;
 
         //update for each sprite
 
@@ -31,8 +33,8 @@ public class Player extends Entity {
         // spriteWidth = 17 * gp.scale;
         // spriteHeight = 25 * gp.scale;
 
-        spriteWidth = 17 * gp.scale;
-        spriteHeight = 25 * gp.scale;
+        spriteWidth = 27 * gp.scale;
+        spriteHeight = 55 * gp.scale;
 
         setDefaultValues();
         getPlayerImage();
@@ -45,8 +47,8 @@ public class Player extends Entity {
         x = 100;
         y = 100;
         speed = gp.w / 100;
-        drawDirection = 2;
         moveDirection = 0;
+        drawDirection = 2;
     }
 
     /**
@@ -56,10 +58,10 @@ public class Player extends Entity {
         
         try {
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 2; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
                     sprite[i][j] = ImageIO.read(getClass().getResourceAsStream(
-                        "/res/jester.png"));
+                        "/res/Queen_sprites/Queen_" + i + "_" + j + ".png"));
                 }
             }
 
@@ -81,18 +83,16 @@ public class Player extends Entity {
             }
             spriteCounter = 0;
         }
-        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+        if (keyH.uPressed || keyH.dPressed || keyH.lPressed || keyH.rPressed) {
 
-            if (keyH.upPressed) {
+            if (keyH.uPressed) {
                 moveDirection = 0;
-            } else if (keyH.downPressed) {
+            } else if (keyH.dPressed) {
                 moveDirection = 1;
-            } else if (keyH.leftPressed) {
+            } else if (keyH.lPressed) {
                 moveDirection = 2;
-                drawDirection = 2;
-            } else if (keyH.rightPressed) {
+            } else if (keyH.rPressed) {
                 moveDirection = 3;
-                drawDirection = 3;
             }
 
             if (!collisionOn) {
@@ -113,6 +113,26 @@ public class Player extends Entity {
             //add animation here.
             
         }
+        
+        //experimental enemy follower algorithm.
+
+        if (x > player.x) {
+            drawDirection = 2;
+        } else {
+            drawDirection = 3;
+        }
+        int sped = 40;
+        if (Math.abs(Math.abs(x - player.x) - Math.abs(y - player.y)) > 100) {
+            // sped = 10;
+        }
+        if (Math.abs(Math.abs(x - player.x) - Math.abs(y - player.y)) < 10) {
+            x += (player.x - x) / sped;
+            y += (player.y - y) / sped;
+        } else if (Math.abs(x - player.x) > Math.abs(y - player.y)) {
+            x += (player.x - x) / sped;
+        } else {
+            y += (player.y - y) / sped;
+        }
     }
 
     /**
@@ -122,8 +142,8 @@ public class Player extends Entity {
         
         BufferedImage image = null;
 
-
-        image = sprite[moveDirection][spriteNum];
+        // image = sprite[moveDirection][spriteNum];
+        image = sprite[drawDirection][spriteNum];
 
         g2.drawImage(image, x - spriteWidth / 2, y - spriteHeight / 2,
             spriteWidth, spriteHeight, null);

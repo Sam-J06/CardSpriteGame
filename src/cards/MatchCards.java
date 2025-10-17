@@ -14,7 +14,8 @@ import main.KeyHandler;
 public class MatchCards {
 
     ArrayList<Card> cardset;
-    int numberOfCards = 20;
+    int numberOfPairs = 8;
+    int numberOfCards = numberOfPairs * 2;
     GamePanel gp;
     KeyHandler keyH;
     BufferedImage backOfCard;
@@ -22,6 +23,8 @@ public class MatchCards {
     int cardHeight;
     int rowsOfCards = 4 - 1;
     int columnsOfCards = 5 - 1;
+    int card1Select = -1;
+    int card2Select = -1;
     
     
     /**
@@ -53,26 +56,28 @@ public class MatchCards {
             int suit = 0;
             int pattern = 1;
             for (int i = 0; i < numberOfCards; i++) {
-                if (pattern > numberOfCards / 2) {
+                if (pattern > numberOfPairs) {
                     suit = 1;
                     pattern = 1;
                 }
                 BufferedImage image = null;
-                image = ImageIO.read(getClass().getResourceAsStream("/res/cards/Card_"
-                    + suit + "_" + (i % 10 + 1) + ".png"));
-                Card card = new Card(suit, (i % 10 + 1), image);
+                image = ImageIO.read(getClass().getResourceAsStream("/res/card_sprites/Card_"
+                    + suit + "_" + (i % numberOfPairs + 1) + ".png"));
+                Card card = new Card(suit, (i % numberOfPairs + 1), image);
                 cardset.add(card);
                 pattern++;
             }
         
-            backOfCard = ImageIO.read(getClass().getResourceAsStream("/res/cards/Card_0_0.png"));
+            backOfCard = ImageIO.read(getClass().getResourceAsStream(
+                    "/res/card_sprites/Card_0_0.png"));
 
             
         } catch (Exception e) {
             // TODO: handle exception
         }
 
-        getXYColumnRow();
+        shuffleCards();
+
     }
 
 
@@ -81,18 +86,82 @@ public class MatchCards {
      */
     public void update(Player player) {
 
-        if (keyH.cPressed) {
-            shuffleCards();
-        }
+        // if (keyH.spacePressed) {
+        //     for (int i = 0; i < numberOfCards; i++) {
+        //         cardset.get(i).flipped = true;
+        //         System.out.println("flipped card "
+        //             + cardset.get(i).suit + " " + cardset.get(i).pattern + "!");
+        //     }
+        // }
 
-        if (keyH.space) {
+
+        // if (keyH.spacePressed) {
+        //     for (int i = 0; i < numberOfCards; i++) {
+        //         if (player.x > cardset.get(i).cardX && player.x < cardset.get(i).cardX + cardWidth && player.y > cardset.get(i).cardY && player.y < cardset.get(i).cardY + cardHeight) {
+        //             cardset.get(i).flipped = true;
+        //         }
+        //     }
+        // }
+
+        
+
+
+        if (keyH.spacePressed && !(gp.kingCombat || gp.queenCombat)) {
             for (int i = 0; i < numberOfCards; i++) {
-                cardset.get(i).flipped = true;
-                System.out.println("flipped card "
-                    + cardset.get(i).suit + " " + cardset.get(i).pattern + "!");
+
+                if (!cardset.get(i).flipped && player.x > cardset.get(i).cardX
+                    && player.x < cardset.get(i).cardX + cardWidth
+                    && player.y > cardset.get(i).cardY
+                    && player.y < cardset.get(i).cardY + cardHeight) { //if card is face down
+                
+                    if (card1Select == -1) {    //and 1st card not sected
+
+                        card1Select = i;
+                        cardset.get(i).flipped = true;  //select first card and flip
+                        System.out.println("card 1 selected");
+
+                    } else if (card2Select == -1) { //or 2nd card not selected
+
+                        card2Select = i;
+                        cardset.get(i).flipped = true;  //select 2nd card and flip
+                        System.out.println("card 2 selected");
+
+
+                        if (cardset.get(card1Select).pattern != cardset.get(card2Select).pattern) {
+                            System.out.println("wrong");
+
+                            cardset.get(card1Select).flipped = false;
+                            cardset.get(card2Select).flipped = false;
+
+                            card1Select = -1;
+                            card2Select = -1;
+
+                            gp.kingCombat = true;
+                            gp.queenCombat = true;
+
+                            System.out.println("card selection reset");
+                        } else {
+                            
+                            System.out.println("correct");
+
+                            card1Select = -1;
+                            card2Select = -1;
+
+                            System.out.println("card selection reset");
+                        }
+
+                    }
+
+                }
+
             }
+        } else if (keyH.spacePressed && (gp.kingCombat || gp.queenCombat)) {
+            System.out.println("attack!");
 
         }
+
+
+        
     }
 
     /**
@@ -107,6 +176,7 @@ public class MatchCards {
         }
         getXYColumnRow();
         System.out.println("Cards shuffled");
+        
 
     }
 
@@ -121,6 +191,7 @@ public class MatchCards {
                 image = cardset.get(i).cardImage;
             } else {
                 image = backOfCard;
+                // image = cardset.get(i).cardImage;
             }
             g2.drawImage(image, cardset.get(i).cardX, cardset.get(i).cardY,
                 cardWidth, cardHeight, null);
@@ -135,15 +206,16 @@ public class MatchCards {
         int row = 0;
         int column = 0;
         for (int i = 0; i < numberOfCards; i++) {
-            if (column > 4) {
+            if (column > 3) {
                 row++;
                 column = 0;
             }
             cardset.get(i).row = row;
             cardset.get(i).column = column;
-            cardset.get(i).cardX = gp.scale * (80 + 39 * column);
+            cardset.get(i).cardX = gp.scale * (80 + 39 / 2 + 39 * column);
             cardset.get(i).cardY = gp.scale * (16 + 56 * row);
-            System.out.println("set card " + i + " to column " + column + " row " + row);
+            System.out.println("set " + cardset.get(i).suit + " "
+                + cardset.get(i).pattern + " to column " + column + " row " + row);
             column++;
         }
     }

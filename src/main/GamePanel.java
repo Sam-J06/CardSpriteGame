@@ -1,7 +1,9 @@
 package main;
 
 import cards.MatchCards;
+import entity.King;
 import entity.Player;
+import entity.Queen;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -15,7 +17,6 @@ public class GamePanel extends JPanel implements Runnable {
     public final int scale = 2;
     public final int w = scale * 349;
     public final int h = scale * 250;
-    public final int howmany = 10;
 
     public final int fps = 30;
 
@@ -23,9 +24,18 @@ public class GamePanel extends JPanel implements Runnable {
 
     public Thread gameThread;
 
-    public Player player = new Player(this, keyH);
+    public boolean kingCombat;
+    public boolean queenCombat;
+
+   
 
     public MatchCards cards = new MatchCards(this, keyH);
+
+    public Player player = new Player(this, keyH);
+
+    public King king = new King(player, this, keyH);
+
+    public Queen queen = new Queen(player, this, keyH);
 
     /**
      * gamepanel constructor.
@@ -66,8 +76,18 @@ public class GamePanel extends JPanel implements Runnable {
             //     frame = 0;
             // }
 
-            if (keyH.escape) {
+            if (keyH.escapePressed) {
                 System.exit(0);
+            }
+            if (keyH.cPressed && !kingCombat) {
+                kingCombat = true;
+            } else if (keyH.cPressed) {
+                kingCombat = false;
+            }
+            if (keyH.mPressed && !queenCombat) {
+                queenCombat = true;
+            } else if (keyH.mPressed) {
+                queenCombat = false;
             }
 
 
@@ -97,6 +117,13 @@ public class GamePanel extends JPanel implements Runnable {
         
         cards.update(player);
         player.update();
+        if (kingCombat) {
+            king.update();
+        }
+        if (queenCombat) {
+            queen.update();
+        }
+
 
     }
 
@@ -113,6 +140,13 @@ public class GamePanel extends JPanel implements Runnable {
         cards.draw(g2); 
 
         player.draw(g2);
+
+        if (kingCombat) {
+            king.draw(g2);
+        }
+        if (queenCombat) {
+            queen.draw(g2);
+        }
 
         g2.dispose();
     }
