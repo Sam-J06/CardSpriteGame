@@ -22,12 +22,15 @@ public class GamePanel extends JPanel implements Runnable {
 
     KeyHandler keyH = new KeyHandler();
 
-    public Thread gameThread;
 
     public boolean kingCombat;
     public boolean queenCombat;
 
+    public int points = 0;
+
    
+    //Initiation of Classes.
+    public Sound sound = new Sound();
 
     public MatchCards cards = new MatchCards(this, keyH);
 
@@ -36,6 +39,9 @@ public class GamePanel extends JPanel implements Runnable {
     public King king = new King(player, this, keyH);
 
     public Queen queen = new Queen(player, this, keyH);
+
+
+    public Thread gameThread;
 
     /**
      * gamepanel constructor.
@@ -48,18 +54,19 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);
 
         this.setFocusable(true);
-
-
     }
 
     /**
-     * starts gamethread.
+     * starts gamethread. Please read more on this.
      */
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    /**
+     * The GameLoop is located here.
+     */
     public void run() {
         double drawInterval = 1000000000 / fps; //1 second in nano / fps.
         double nextDrawTime = System.nanoTime() + drawInterval;
@@ -68,13 +75,7 @@ public class GamePanel extends JPanel implements Runnable {
         while (gameThread != null) {
             
             update();
-            repaint();
-
-            // frame++;
-            // if (frame == 30) {
-            //     System.out.println("30frames passed");
-            //     frame = 0;
-            // }
+            repaint(); //included method. Please read.
 
             if (keyH.escapePressed) {
                 System.exit(0);
@@ -114,16 +115,39 @@ public class GamePanel extends JPanel implements Runnable {
      * Updates other elements such as the player, enemies and cards.
      */
     public void update() {
+
+        //Plays sound effect if game is completed.
+        if (points == 8) {
+            playSFX(2);
+            points = 0;
+        }
+
+        //'esc' exits. 'm' summons queen. 'c' summons king.
+        if (keyH.escapePressed) {
+            System.exit(0);
+        }
+        if (keyH.cPressed && !kingCombat) {
+            kingCombat = true;
+        } else if (keyH.cPressed) {
+            kingCombat = false;
+        }
+        if (keyH.mPressed && !queenCombat) {
+            queenCombat = true;
+        } else if (keyH.mPressed) {
+            queenCombat = false;
+        }
         
+        //Updating of the initiated classes.
         cards.update(player);
+
         player.update();
+
         if (kingCombat) {
             king.update();
         }
         if (queenCombat) {
             queen.update();
         }
-
 
     }
 
@@ -134,8 +158,6 @@ public class GamePanel extends JPanel implements Runnable {
 
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-
-        //TODO: add entity draw methods.
 
         cards.draw(g2); 
 
@@ -149,6 +171,32 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         g2.dispose();
+    }
+
+    /**
+     * Plays looped music.
+     */
+    public void playMusic(int i) {
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+
+    }
+    
+    /**
+     * Stops the current sound that plays.
+     */
+    public void stopSound() {
+        sound.stop();
+
+    }
+
+    /**
+     * Plays unlooped sound effects.
+     */
+    public void playSFX(int i) {
+        sound.setFile(i);
+        sound.play();
     }
     
 }

@@ -13,10 +13,15 @@ public class King extends Entity {
 
     GamePanel gp;
     KeyHandler keyH;
+
     public int x;
     public int y;
+
+    //the dimension of the sprites.
     public int spriteHeight;
     public int spriteWidth;
+
+    //player imported in order to check its x, y.
     Player player;
 
     /**
@@ -26,12 +31,6 @@ public class King extends Entity {
         this.gp = gp;
         this.keyH = keyH;
         this.player = player;
-
-        //update for each sprite
-
-        //jester values
-        // spriteWidth = 17 * gp.scale;
-        // spriteHeight = 25 * gp.scale;
 
         spriteWidth = 27 * gp.scale;
         spriteHeight = 55 * gp.scale;
@@ -75,6 +74,7 @@ public class King extends Entity {
      */
     public void update() {
 
+        //If the counter is over 5, go to next frame of King animation.
         spriteCounter++;
         if (spriteCounter > 5) {
             spriteNum++;
@@ -83,6 +83,8 @@ public class King extends Entity {
             }
             spriteCounter = 0;
         }
+
+        //If any direction key is pressed, go in that direction by speed.
         if (keyH.uPressed || keyH.dPressed || keyH.lPressed || keyH.rPressed) {
 
             if (keyH.uPressed) {
@@ -95,7 +97,7 @@ public class King extends Entity {
                 moveDirection = 3;
             }
 
-            if (!collisionOn) {
+            if (!collisionOn) { //checks collision (will we need this?)
                 switch (moveDirection) {
                     case 0: y -= speed;
                         break;
@@ -109,19 +111,16 @@ public class King extends Entity {
                         break;
                 }
             }
-
-            //add animation here.
-            
+            //I assume animations will go here.
         }
         
         //experimental enemy follower algorithm.
-
         if (x > player.x) {
             drawDirection = 2;
         } else {
             drawDirection = 3;
         }
-        int sped = 40;
+        int sped = 10;
         if (Math.abs(Math.abs(x - player.x) - Math.abs(y - player.y)) > 100) {
             // sped = 10;
         }
@@ -142,7 +141,7 @@ public class King extends Entity {
         
         BufferedImage image = null;
 
-        // image = sprite[moveDirection][spriteNum];
+        //checks which frame of the animation, and direction for King.
         image = sprite[drawDirection][spriteNum];
 
         g2.drawImage(image, x - spriteWidth / 2, y - spriteHeight / 2,

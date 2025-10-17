@@ -39,13 +39,12 @@ public class MatchCards {
         cardHeight = 52 * gp.scale;
 
         setupCards();
-        // shuffleCards(); CARD SHUFFLE AT START DISABLED. TYPE 'C' FOR SHUFFLE
-
-        
     }
 
     /**
-     * Assigns values to all cards.
+     * Assigns assigns a suit, pattern and image to all cards.
+     * Creates an arraylist cardset of all cards.
+     * shuffles cards.
      */
     public void setupCards() {
 
@@ -55,6 +54,7 @@ public class MatchCards {
 
             int suit = 0;
             int pattern = 1;
+            //iterates through all cards to assign suit, pattern and image.
             for (int i = 0; i < numberOfCards; i++) {
                 if (pattern > numberOfPairs) {
                     suit = 1;
@@ -68,12 +68,13 @@ public class MatchCards {
                 pattern++;
             }
         
+            //assigns an image to the back of the card.
             backOfCard = ImageIO.read(getClass().getResourceAsStream(
                     "/res/card_sprites/Card_0_0.png"));
 
             
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
 
         shuffleCards();
@@ -86,26 +87,6 @@ public class MatchCards {
      */
     public void update(Player player) {
 
-        // if (keyH.spacePressed) {
-        //     for (int i = 0; i < numberOfCards; i++) {
-        //         cardset.get(i).flipped = true;
-        //         System.out.println("flipped card "
-        //             + cardset.get(i).suit + " " + cardset.get(i).pattern + "!");
-        //     }
-        // }
-
-
-        // if (keyH.spacePressed) {
-        //     for (int i = 0; i < numberOfCards; i++) {
-        //         if (player.x > cardset.get(i).cardX && player.x < cardset.get(i).cardX + cardWidth && player.y > cardset.get(i).cardY && player.y < cardset.get(i).cardY + cardHeight) {
-        //             cardset.get(i).flipped = true;
-        //         }
-        //     }
-        // }
-
-        
-
-
         if (keyH.spacePressed && !(gp.kingCombat || gp.queenCombat)) {
             for (int i = 0; i < numberOfCards; i++) {
 
@@ -114,54 +95,48 @@ public class MatchCards {
                     && player.y > cardset.get(i).cardY
                     && player.y < cardset.get(i).cardY + cardHeight) { //if card is face down
                 
-                    if (card1Select == -1) {    //and 1st card not sected
+                    if (card1Select == -1) {  //and 1st card not sected
 
                         card1Select = i;
                         cardset.get(i).flipped = true;  //select first card and flip
                         System.out.println("card 1 selected");
+                        gp.playSFX(0);
 
                     } else if (card2Select == -1) { //or 2nd card not selected
 
                         card2Select = i;
                         cardset.get(i).flipped = true;  //select 2nd card and flip
                         System.out.println("card 2 selected");
+                        gp.playSFX(0);
 
-
+                        //compares pattern of selected cards
                         if (cardset.get(card1Select).pattern != cardset.get(card2Select).pattern) {
+                            //if non matching cards are selected.
                             System.out.println("wrong");
 
                             cardset.get(card1Select).flipped = false;
                             cardset.get(card2Select).flipped = false;
+                            gp.playSFX(1);
 
                             card1Select = -1;
                             card2Select = -1;
 
-                            gp.kingCombat = true;
-                            gp.queenCombat = true;
-
                             System.out.println("card selection reset");
                         } else {
+                            //if matching cards are selected.
+                            gp.points++;
+                            System.out.println("correct. Points: " + gp.points);
                             
-                            System.out.println("correct");
-
                             card1Select = -1;
                             card2Select = -1;
 
                             System.out.println("card selection reset");
                         }
-
                     }
-
                 }
-
             }
-        } else if (keyH.spacePressed && (gp.kingCombat || gp.queenCombat)) {
-            System.out.println("attack!");
 
-        }
-
-
-        
+        } 
     }
 
     /**
@@ -169,15 +144,13 @@ public class MatchCards {
      */
     public void shuffleCards() {
         for (int i = 0; i < numberOfCards; i++) {
-            int j = (int) (Math.random() * cardset.size()); //gets random index from 0 - 19
+            int j = (int) (Math.random() * cardset.size()); //gets random index from 0 - 17
             Card temp = cardset.get(i);
             cardset.set(i, cardset.get(j));
             cardset.set(j, temp);
         }
         getXYColumnRow();
         System.out.println("Cards shuffled");
-        
-
     }
 
     /**
@@ -185,14 +158,19 @@ public class MatchCards {
      */
     public void draw(Graphics2D g2) {
 
+        //iterates through all cards
         for (int i = 0; i < numberOfCards; i++) {
+
             BufferedImage image = null;
+
+            //checks if card is flipped or not.
             if (cardset.get(i).flipped) {
                 image = cardset.get(i).cardImage;
             } else {
                 image = backOfCard;
                 // image = cardset.get(i).cardImage;
             }
+
             g2.drawImage(image, cardset.get(i).cardX, cardset.get(i).cardY,
                 cardWidth, cardHeight, null);
         }
@@ -201,12 +179,15 @@ public class MatchCards {
 
     /**
      * Updates the row, column, x and y information of each card in the arraylist.
+     * Columns are determined by if loop.
+     * Rows are determined by the number of cards.
      */
     public void getXYColumnRow() {
+
         int row = 0;
         int column = 0;
         for (int i = 0; i < numberOfCards; i++) {
-            if (column > 3) {
+            if (column > 3) {   //goes to new row after 4 columns.
                 row++;
                 column = 0;
             }

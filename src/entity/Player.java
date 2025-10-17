@@ -13,8 +13,11 @@ public class Player extends Entity {
 
     GamePanel gp;
     KeyHandler keyH;
+
     public int x;
     public int y;
+
+    //the dimension of the sprites.
     public int spriteHeight;
     public int spriteWidth;
 
@@ -24,12 +27,6 @@ public class Player extends Entity {
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
-
-        //update for each sprite
-
-        //jester values
-        // spriteWidth = 17 * gp.scale;
-        // spriteHeight = 25 * gp.scale;
 
         spriteWidth = 17 * gp.scale;
         spriteHeight = 25 * gp.scale;
@@ -72,8 +69,7 @@ public class Player extends Entity {
      * Updates direction, speed, and player sprite. Gets called in GamePanel class.
      */
     public void update() {
-
-        spriteCounter++;
+        //If the counter is over 5, go to next frame of Player animation.
         if (spriteCounter > 5) {
             spriteNum++;
             if (spriteNum == 4) {
@@ -81,6 +77,8 @@ public class Player extends Entity {
             }
             spriteCounter = 0;
         }
+
+        //If any direction key is pressed, go in that direction by speed.
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
 
             if (keyH.upPressed) {
@@ -110,7 +108,22 @@ public class Player extends Entity {
                 }
             }
 
-            //add animation here.
+            //Makes player walk in infinate loop.
+            //Prevents walking off screen.
+            x = x % gp.w;
+            y = y % gp.h;
+            if (x < 0) {
+                System.out.println("out of bounds " + x);
+                x = gp.w + x;
+                System.out.println("set to " + x);
+            }
+            if (y < 0) {
+                System.out.println("out of bounds " + y);
+                y = gp.h + y;
+                System.out.println("set to " + y);
+            }
+
+            //I assume animations will go here.
             
         }
     }
@@ -121,8 +134,8 @@ public class Player extends Entity {
     public void draw(Graphics2D g2) {
         
         BufferedImage image = null;
-
-
+        
+        //checks which frame of the animation, and direction for King.
         image = sprite[moveDirection][spriteNum];
 
         g2.drawImage(image, x - spriteWidth / 2, y - spriteHeight / 2,
