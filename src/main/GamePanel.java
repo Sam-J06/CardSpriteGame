@@ -23,22 +23,19 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler();
 
 
-    public boolean kingCombat;
-    public boolean queenCombat;
-
     public int points = 0;
 
    
     //Initiation of Classes.
     public Sound sound = new Sound();
 
-    public MatchCards cards = new MatchCards(this, keyH);
-
     public Player player = new Player(this, keyH);
 
     public King king = new King(player, this, keyH);
 
     public Queen queen = new Queen(player, this, keyH);
+
+    public MatchCards cards = new MatchCards(this, keyH, king, queen);
 
 
     public Thread gameThread;
@@ -77,21 +74,6 @@ public class GamePanel extends JPanel implements Runnable {
             update();
             repaint(); //included method. Please read.
 
-            if (keyH.escapePressed) {
-                System.exit(0);
-            }
-            if (keyH.cPressed && !kingCombat) {
-                kingCombat = true;
-            } else if (keyH.cPressed) {
-                kingCombat = false;
-            }
-            if (keyH.mPressed && !queenCombat) {
-                queenCombat = true;
-            } else if (keyH.mPressed) {
-                queenCombat = false;
-            }
-
-
             try {
                 
                 double remainingTime = nextDrawTime -  System.nanoTime();
@@ -126,15 +108,15 @@ public class GamePanel extends JPanel implements Runnable {
         if (keyH.escapePressed) {
             System.exit(0);
         }
-        if (keyH.cPressed && !kingCombat) {
-            kingCombat = true;
+        if (keyH.cPressed && !king.combat) {
+            king.spawn();
         } else if (keyH.cPressed) {
-            kingCombat = false;
+            king.despawn();
         }
-        if (keyH.mPressed && !queenCombat) {
-            queenCombat = true;
+        if (keyH.mPressed && !queen.combat) {
+            queen.spawn();
         } else if (keyH.mPressed) {
-            queenCombat = false;
+            queen.despawn();
         }
         
         //Updating of the initiated classes.
@@ -142,10 +124,10 @@ public class GamePanel extends JPanel implements Runnable {
 
         player.update();
 
-        if (kingCombat) {
+        if (king.combat) {
             king.update();
         }
-        if (queenCombat) {
+        if (queen.combat) {
             queen.update();
         }
 
@@ -163,10 +145,10 @@ public class GamePanel extends JPanel implements Runnable {
 
         player.draw(g2);
 
-        if (kingCombat) {
+        if (king.combat) {
             king.draw(g2);
         }
-        if (queenCombat) {
+        if (queen.combat) {
             queen.draw(g2);
         }
 
@@ -188,7 +170,6 @@ public class GamePanel extends JPanel implements Runnable {
      */
     public void stopSound() {
         sound.stop();
-
     }
 
     /**

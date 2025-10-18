@@ -21,6 +21,8 @@ public class King extends Entity {
     public int spriteHeight;
     public int spriteWidth;
 
+    public boolean combat = false;
+
     //player imported in order to check its x, y.
     Player player;
 
@@ -146,6 +148,24 @@ public class King extends Entity {
 
         g2.drawImage(image, x - spriteWidth / 2, y - spriteHeight / 2,
             spriteWidth, spriteHeight, null);
+    }
+
+    /**
+     * Sets king into combt which updates and draws him in GamePanel.
+     * Starts playing music.
+     */
+    public void spawn() {
+        combat = true;
+        gp.playMusic(3);
+    }
+
+    /**
+     * Sets king out of combat.
+     * Stops music.
+     */
+    public void despawn() {
+        combat = false;
+        gp.stopSound();
     }
     
 }

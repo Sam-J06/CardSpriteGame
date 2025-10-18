@@ -21,8 +21,9 @@ public class Queen extends Entity {
     public int spriteHeight;
     public int spriteWidth;
 
-        //player imported in order to check its x, y.
-
+    public boolean combat = false;
+    
+    //player imported in order to check its x, y.
     Player player;
 
     /**
@@ -147,6 +148,24 @@ public class Queen extends Entity {
 
         g2.drawImage(image, x - spriteWidth / 2, y - spriteHeight / 2,
             spriteWidth, spriteHeight, null);
+    }
+
+    /**
+     * Sets queen into combt which updates and draws her in GamePanel.
+     * Starts playing music.
+     */
+    public void spawn() {
+        combat = true;
+        gp.playMusic(3);
+    }
+
+    /**
+     * Sets queen out of combat.
+     * Stops music.
+     */
+    public void despawn() {
+        combat = false;
+        gp.stopSound();
     }
     
 }

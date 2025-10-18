@@ -1,6 +1,8 @@
 package cards;
 
+import entity.King;
 import entity.Player;
+import entity.Queen;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -25,15 +27,19 @@ public class MatchCards {
     int columnsOfCards = 5 - 1;
     int card1Select = -1;
     int card2Select = -1;
+    King king;
+    Queen queen;
     
     
     /**
      * This method is run when the an instnce of MatchCards is created.
      * This will be done in GamePanel.java.
      */
-    public MatchCards(GamePanel gp, KeyHandler keyH) {
+    public MatchCards(GamePanel gp, KeyHandler keyH, King king, Queen queen) {
         this.gp = gp;
         this.keyH = keyH;
+        this.king = king;
+        this.queen = queen;
 
         cardWidth = 37 * gp.scale;
         cardHeight = 52 * gp.scale;
@@ -87,7 +93,7 @@ public class MatchCards {
      */
     public void update(Player player) {
 
-        if (keyH.spacePressed && !(gp.kingCombat || gp.queenCombat)) {
+        if (keyH.spacePressed && !(king.combat || queen.combat)) {
             for (int i = 0; i < numberOfCards; i++) {
 
                 if (!cardset.get(i).flipped && player.x > cardset.get(i).cardX
@@ -118,6 +124,27 @@ public class MatchCards {
                             cardset.get(card2Select).flipped = false;
                             gp.playSFX(1);
 
+                            card1Select = -1;
+                            card2Select = -1;
+
+                            System.out.println("card selection reset");
+                        } else if (cardset.get(card1Select).pattern == 7) {
+                            king.spawn();
+
+                            gp.points++;
+                            System.out.println("correct. Points: " + gp.points);
+                            
+                            card1Select = -1;
+                            card2Select = -1;
+
+                            System.out.println("card selection reset");
+                        } else if (cardset.get(card1Select).pattern == 8) {
+                            // gp.queenCombat = true;
+                            queen.spawn();
+
+                            gp.points++;
+                            System.out.println("correct. Points: " + gp.points);
+                            
                             card1Select = -1;
                             card2Select = -1;
 
