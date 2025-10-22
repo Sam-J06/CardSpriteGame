@@ -7,6 +7,7 @@ import entity.Queen;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -140,6 +141,8 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         drawTimer(g2);
+        drawPoints(g2);
+
         g2.dispose();
     }
 
@@ -188,12 +191,19 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         g2.setColor(Color.BLACK);
-        g2.setFont(g2.getFont().deriveFont(15f));
+        g2.setFont(new Font("Times New Roman", Font.BOLD, 15));
         if (timeLeft > 0) {
             g2.drawString(timeLeft + "s", centerX - 10, centerY + radius + 15);
         } else {
             g2.drawString("Time's up!", centerX - 30, centerY + radius + 15);
         }
+    }
+
+    private void drawPoints(Graphics2D g2) {
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        g2.drawString("Points: " + points, w - 150, 40);
     }
 
     public void playMusic(int i) {
