@@ -6,9 +6,6 @@ import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.KeyHandler;
 
-/**
- * All player information and methods.
- */
 public class Player extends Entity {
 
     GamePanel gp;
@@ -17,13 +14,12 @@ public class Player extends Entity {
     public int x;
     public int y;
 
-    //the dimension of the sprites.
     public int spriteHeight;
     public int spriteWidth;
 
-    /**
-     * Constructor.
-     */
+    private BufferedImage swordImage;
+    private boolean showSword = false;
+
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -33,11 +29,9 @@ public class Player extends Entity {
 
         setDefaultValues();
         getPlayerImage();
+        getSwordImage();
     }
 
-    /**
-     * sets default values.
-     */
     public void setDefaultValues() {
         x = 100;
         y = 100;
@@ -46,30 +40,30 @@ public class Player extends Entity {
         moveDirection = 0;
     }
 
-    /**
-     * imports sprites from resource file.
-     */
     public void getPlayerImage() {
-        
         try {
-
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
                     sprite[i][j] = ImageIO.read(getClass().getResourceAsStream(
                         "/res/jester.png"));
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Updates direction, speed, and player sprite. Gets called in GamePanel class.
-     */
+    public void getSwordImage() {
+        try {
+            swordImage = ImageIO.read(getClass().getResourceAsStream("/res/sword.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void update() {
-        //If the counter is over 5, go to next frame of Player animation.
+        showSword = keyH.spacePressed;
+
         if (spriteCounter > 5) {
             spriteNum++;
             if (spriteNum == 4) {
@@ -78,68 +72,38 @@ public class Player extends Entity {
             spriteCounter = 0;
         }
 
-        //If any direction key is pressed, go in that direction by speed.
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
 
-            if (keyH.upPressed) {
-                moveDirection = 0;
-            } else if (keyH.downPressed) {
-                moveDirection = 1;
-            } else if (keyH.leftPressed) {
-                moveDirection = 2;
-                drawDirection = 2;
-            } else if (keyH.rightPressed) {
-                moveDirection = 3;
-                drawDirection = 3;
-            }
+            if (keyH.upPressed) moveDirection = 0;
+            else if (keyH.downPressed) moveDirection = 1;
+            else if (keyH.leftPressed) { moveDirection = 2; drawDirection = 2; }
+            else if (keyH.rightPressed) { moveDirection = 3; drawDirection = 3; }
 
             if (!collisionOn) {
                 switch (moveDirection) {
-                    case 0: y -= speed;
-                        break;
-                    case 1: y += speed;
-                        break;
-                    case 2: x -= speed;
-                        break;
-                    case 3: x += speed;
-                        break;
-                    default:
-                        break;
+                    case 0: y -= speed; break;
+                    case 1: y += speed; break;
+                    case 2: x -= speed; break;
+                    case 3: x += speed; break;
                 }
             }
 
-            //Makes player walk in infinate loop.
-            //Prevents walking off screen.
-            x = x % gp.w;
-            y = y % gp.h;
-            if (x < 0) {
-                System.out.println("out of bounds " + x);
-                x = gp.w + x;
-                System.out.println("set to " + x);
-            }
-            if (y < 0) {
-                System.out.println("out of bounds " + y);
-                y = gp.h + y;
-                System.out.println("set to " + y);
-            }
-
-            //I assume animations will go here.
-            
+            x = (x + gp.w) % gp.w;
+            y = (y + gp.h) % gp.h;
         }
     }
 
-    /**
-     * Draws elements.
-     */
     public void draw(Graphics2D g2) {
-        
-        BufferedImage image = null;
-        
-        //checks which frame of the animation, and direction for King.
-        image = sprite[moveDirection][spriteNum];
-
+        BufferedImage image = sprite[moveDirection][spriteNum];
         g2.drawImage(image, x - spriteWidth / 2, y - spriteHeight / 2,
             spriteWidth, spriteHeight, null);
+
+        if (showSword && swordImage != null) {
+            int swordW = spriteWidth * 2;
+            int swordH = swordImage.getHeight() * swordW / swordImage.getWidth() - 150;
+            int swordX = x - swordW / 2;
+            int swordY = y - spriteHeight / 200 - swordH / 2;
+            g2.drawImage(swordImage, swordX, swordY, swordW, swordH, null);
+        }
     }
-    
 }

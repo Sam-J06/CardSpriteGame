@@ -1,15 +1,11 @@
 package main;
 
-// import java.awt.RenderingHints.Key; TODO: Read up on this!
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-/**
- * Registers user input for keys which are pressed..
- */
-public class KeyHandler implements KeyListener {
-
-    //these bools signify which key is pressed.
+public class KeyHandler implements KeyListener, MouseListener {
 
     //wasd
     public boolean upPressed;
@@ -29,7 +25,8 @@ public class KeyHandler implements KeyListener {
     public boolean lPressed;
     public boolean rPressed;
 
-    
+    public boolean mousePressed;
+
     @Override
     public void keyTyped(KeyEvent e) {
     }
@@ -77,7 +74,6 @@ public class KeyHandler implements KeyListener {
         }
     }
 
-    //checks if key is no longer pressed.
     @Override
     public void keyReleased(KeyEvent e) {
 
@@ -119,7 +115,28 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_M) {
             mPressed = false;
         }
-        
     }
-    
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        mousePressed = true;
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        mousePressed = true;
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        mousePressed = false;
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
 }
