@@ -6,6 +6,9 @@ import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.KeyHandler;
 
+/**
+ * Handles the player character, movement, and sword display.
+ */
 public class Player extends Entity {
 
     GamePanel gp;
@@ -20,6 +23,9 @@ public class Player extends Entity {
     private BufferedImage swordImage;
     private boolean showSword = false;
 
+    /**
+    * Handles the player character and sword display.
+    */
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -32,6 +38,9 @@ public class Player extends Entity {
         getSwordImage();
     }
 
+    /**
+    * Handles the player character movement.
+    */
     public void setDefaultValues() {
         x = 100;
         y = 100;
@@ -40,6 +49,9 @@ public class Player extends Entity {
         moveDirection = 0;
     }
 
+    /**
+    * Handles the display of the player character.
+    */
     public void getPlayerImage() {
         try {
             for (int i = 0; i < 4; i++) {
@@ -53,6 +65,9 @@ public class Player extends Entity {
         }
     }
 
+    /**
+    * Handles the slash for the player character.
+    */
     public void getSwordImage() {
         try {
             swordImage = ImageIO.read(getClass().getResourceAsStream("/res/sword.png"));
@@ -61,6 +76,9 @@ public class Player extends Entity {
         }
     }
 
+    /**
+    * Shows the slash when the right key is pressed.
+    */
     public void update() {
         showSword = keyH.spacePressed;
 
@@ -74,17 +92,28 @@ public class Player extends Entity {
 
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
 
-            if (keyH.upPressed) moveDirection = 0;
-            else if (keyH.downPressed) moveDirection = 1;
-            else if (keyH.leftPressed) { moveDirection = 2; drawDirection = 2; }
-            else if (keyH.rightPressed) { moveDirection = 3; drawDirection = 3; }
+            if (keyH.upPressed) {
+                moveDirection = 0;
+            } else if (keyH.downPressed) {
+                moveDirection = 1;
+            } else if (keyH.leftPressed) { 
+                moveDirection = 2; 
+                drawDirection = 2; 
+            } else if (keyH.rightPressed) {
+                moveDirection = 3;
+                drawDirection = 3; 
+            }
 
             if (!collisionOn) {
                 switch (moveDirection) {
-                    case 0: y -= speed; break;
-                    case 1: y += speed; break;
-                    case 2: x -= speed; break;
-                    case 3: x += speed; break;
+                    case 0: y -= speed; 
+                    break;
+                    case 1: y += speed; 
+                    break;
+                    case 2: x -= speed; 
+                    break;
+                    case 3: x += speed; 
+                    break;
                 }
             }
 
@@ -92,7 +121,10 @@ public class Player extends Entity {
             y = (y + gp.h) % gp.h;
         }
     }
-
+    /**
+    * Handles the dimentions of the slash of the player character.
+    */
+    
     public void draw(Graphics2D g2) {
         BufferedImage image = sprite[moveDirection][spriteNum];
         g2.drawImage(image, x - spriteWidth / 2, y - spriteHeight / 2,
