@@ -13,6 +13,9 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.JPanel;
 
+/**
+ * Handles the main game screen, updates, and drawing everything.
+ */
 public class GamePanel extends JPanel implements Runnable {
     public final int scale = 2;
     public final int w = scale * 349;
@@ -41,6 +44,9 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean timerRunning = true;
     private boolean timerWarningPlayed = false;
 
+    /**
+     * Sets up the game window and input.
+     */
     public GamePanel() {
         this.setPreferredSize(new Dimension(w, h));
         this.setBackground(new Color(81, 128, 105));
@@ -50,11 +56,17 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
     }
 
+    /**
+     * Starts the main game thread.
+     */
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    /**
+     * Main game loop, runs update and draw.
+     */
     public void run() {
         double drawInterval = 1000000000 / fps;
         double nextDrawTime = System.nanoTime() + drawInterval;
@@ -76,6 +88,9 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * Updates player, cards, enemies, and timer.
+     */
     public void update() {
         if (!timerRunning) {
             return;
@@ -127,6 +142,9 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * Draws everything on screen.
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -147,6 +165,9 @@ public class GamePanel extends JPanel implements Runnable {
         g2.dispose();
     }
 
+    /**
+     * Draws the timer.
+     */
     private void drawTimer(Graphics2D g2) {
         int radius = 30;
         int centerX = 80;
@@ -200,6 +221,9 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * Draws the points counter.
+     */
     private void drawPoints(Graphics2D g2) {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setColor(Color.BLACK);
@@ -207,16 +231,25 @@ public class GamePanel extends JPanel implements Runnable {
         g2.drawString("Points: " + points, w - 150, 40);
     }
 
+    /**
+     * Plays background music.
+     */
     public void playMusic(int i) {
         sound.setFile(i);
         sound.play();
         sound.loop();
     }
 
+    /**
+     * Stops current music.
+     */
     public void stopSound() {
         sound.stop();
     }
 
+    /**
+     * Plays a sound effect.
+     */
     public void playSFX(int i) {
         sound.setFile(i);
         sound.play();

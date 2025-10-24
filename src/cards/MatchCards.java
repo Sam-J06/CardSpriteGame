@@ -10,6 +10,9 @@ import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.KeyHandler;
 
+/**
+ * Handles the card-matching.
+ */
 public class MatchCards {
 
     ArrayList<Card> cardset;
@@ -31,6 +34,9 @@ public class MatchCards {
     long flipBackTime = 0;
     long flipDelay = 1000;
 
+    /**
+     * Sets up the card game with sizes, input, and enemies to trigger on matches.
+     */
     public MatchCards(GamePanel gp, KeyHandler keyH, King king, Queen queen) {
         this.gp = gp;
         this.keyH = keyH;
@@ -43,6 +49,9 @@ public class MatchCards {
         setupCards();
     }
 
+    /**
+     * Loads all card faces and the back image, then shuffles.
+     */
     public void setupCards() {
 
         cardset = new ArrayList<>();
@@ -73,6 +82,9 @@ public class MatchCards {
         shuffleCards();
     }
 
+    /**
+     * Handles input and match logic.
+     */
     public void update(Player player) {
 
         if (waitingToFlipBack) {
@@ -142,6 +154,9 @@ public class MatchCards {
         }
     }
 
+    /**
+     * Randomizes the card order and lays them out on the grid.
+     */
     public void shuffleCards() {
         for (int i = 0; i < numberOfCards; i++) {
             int j = (int) (Math.random() * cardset.size());
@@ -153,6 +168,9 @@ public class MatchCards {
         System.out.println("Cards shuffled");
     }
 
+    /**
+     * Draws all the cards, face up or down.
+     */
     public void draw(Graphics2D g2) {
         for (int i = 0; i < numberOfCards; i++) {
             BufferedImage image = null;
@@ -166,6 +184,9 @@ public class MatchCards {
         }
     }
 
+    /**
+     * Calculates each card's row/column and on-screen position.
+     */
     public void getXYColumnRow() {
         int row = 0;
         int column = 0;

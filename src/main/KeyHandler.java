@@ -25,6 +25,7 @@ public class KeyHandler implements KeyListener, MouseListener {
     public boolean lPressed;
     public boolean rPressed;
 
+    // true only while left mouse button is held
     public boolean mousePressed;
 
     @Override
@@ -119,24 +120,32 @@ public class KeyHandler implements KeyListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        mousePressed = true;
+        
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        mousePressed = true;
+        
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            mousePressed = true;
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        mousePressed = false;
+        
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            mousePressed = false;
+        }
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        
     }
 }

@@ -22,6 +22,7 @@ public class Player extends Entity {
 
     private BufferedImage swordImage;
     private boolean showSword = false;
+    private boolean swordWasShowing = false;
 
     /**
     * Handles the player character and sword display.
@@ -66,7 +67,7 @@ public class Player extends Entity {
     }
 
     /**
-    * Handles the slash for the player character.
+    * Loads the sword image.
     */
     public void getSwordImage() {
         try {
@@ -77,10 +78,16 @@ public class Player extends Entity {
     }
 
     /**
-    * Shows the slash when the right key is pressed.
+    * Shows the sword while the LEFT MOUSE BUTTON is held.
     */
     public void update() {
-        showSword = keyH.spacePressed;
+        
+        showSword = keyH.mousePressed;
+
+        if (showSword && !swordWasShowing) {
+            gp.playSFX(6);
+        }
+        swordWasShowing = showSword;
 
         if (spriteCounter > 5) {
             spriteNum++;
@@ -121,10 +128,10 @@ public class Player extends Entity {
             y = (y + gp.h) % gp.h;
         }
     }
+
     /**
-    * Handles the dimentions of the slash of the player character.
+    * Draws the player and the sword.
     */
-    
     public void draw(Graphics2D g2) {
         BufferedImage image = sprite[moveDirection][spriteNum];
         g2.drawImage(image, x - spriteWidth / 2, y - spriteHeight / 2,
