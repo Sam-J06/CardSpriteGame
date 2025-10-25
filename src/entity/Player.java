@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import main.GamePanel;
@@ -33,6 +34,10 @@ public class Player extends Entity {
 
         spriteWidth = 17 * gp.scale;
         spriteHeight = 25 * gp.scale;
+       
+
+        maxHealth = 5;
+        health = 5;
 
         setDefaultValues();
         getPlayerImage();
@@ -81,7 +86,6 @@ public class Player extends Entity {
     * Shows the sword while the LEFT MOUSE BUTTON is held.
     */
     public void update() {
-        
         showSword = keyH.mousePressed;
 
         if (showSword && !swordWasShowing) {
@@ -122,15 +126,33 @@ public class Player extends Entity {
                     case 3: x += speed; 
                     break;
                 }
+                
             }
 
-            x = (x + gp.w) % gp.w;
-            y = (y + gp.h) % gp.h;
+            int minX = spriteWidth / 2;
+            int maxX = gp.w - spriteWidth / 2;
+            int minY = spriteHeight / 2;
+            int maxY = gp.h - spriteHeight / 2;
+            if (x < minX) {
+                x = minX;
+            }
+            if (x > maxX) {
+                x = maxX;
+            }
+            if (y < minY) {
+                y = minY;
+            }
+            if (y > maxY) {
+                y = maxY;
+            } else {
+                //comment
+
+            }
         }
     }
 
     /**
-    * Draws the player and the sword.
+    * Draws the player and the sword (if active).
     */
     public void draw(Graphics2D g2) {
         BufferedImage image = sprite[moveDirection][spriteNum];
@@ -142,7 +164,49 @@ public class Player extends Entity {
             int swordH = swordImage.getHeight() * swordW / swordImage.getWidth() - 150;
             int swordX = x - swordW / 2;
             int swordY = y - spriteHeight / 200 - swordH / 2;
-            g2.drawImage(swordImage, swordX, swordY, swordW, swordH, null);
+
+            if (drawDirection == 2) {
+                g2.drawImage(swordImage, swordX + swordW, swordY, -swordW, swordH, null);
+            } else {
+                g2.drawImage(swordImage, swordX, swordY, swordW, swordH, null);
+            }
         }
+
+        drawHealthBar(g2);
+    }
+
+    public boolean isSlashing() {
+        return showSword;
+    }
+
+    public Rectangle getSwordHitbox() {
+        if (!showSword || swordImage == null) {
+
+            return new Rectangle(0, 0, 0, 0);
+        }
+        int w = spriteWidth;
+        int h = spriteHeight / 2;
+        int sx;
+        int sy;
+        if (drawDirection == 2) {
+            sx = x - spriteWidth / 2 - w;
+            sy = y - h / 2;
+        } else {
+            sx = x + spriteWidth / 2;
+            sy = y - h / 2;
+        }
+        return new Rectangle(sx, sy, w, h);
+    }
+
+    private void drawHealthBar(Graphics2D g2) {
+        int barW = 80;
+        int barH = 8;
+        int bx = 12;
+        int by = 12;
+        g2.setColor(new java.awt.Color(60, 60, 60));
+        g2.fillRect(bx - 1, by - 1, barW + 2, barH + 2);
+        g2.setColor(new java.awt.Color(180, 0, 0));
+        int w = (int) (barW * (health / (double) maxHealth));
+        g2.fillRect(bx, by, Math.max(0, w), barH);
     }
 }

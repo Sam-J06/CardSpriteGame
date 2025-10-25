@@ -36,6 +36,10 @@ public class King extends Entity {
 
         spriteWidth = 27 * gp.scale;
         spriteHeight = 55 * gp.scale;
+        
+
+        maxHealth = 6;
+        health = 6;
 
         setDefaultValues();
         getPlayerImage();
@@ -56,16 +60,13 @@ public class King extends Entity {
      * imports sprites from resource file.
      */
     public void getPlayerImage() {
-        
         try {
-
             for (int i = 2; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
                     sprite[i][j] = ImageIO.read(getClass().getResourceAsStream(
                         "/res/king_sprites/king_" + i + "_" + j + ".png"));
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,7 +77,6 @@ public class King extends Entity {
      */
     public void update() {
 
-        //If the counter is over 5, go to next frame of King animation.
         spriteCounter++;
         if (spriteCounter > 5) {
             spriteNum++;
@@ -86,46 +86,12 @@ public class King extends Entity {
             spriteCounter = 0;
         }
 
-        //If any direction key is pressed, go in that direction by speed.
-        if (keyH.uPressed || keyH.dPressed || keyH.lPressed || keyH.rPressed) {
-
-            if (keyH.uPressed) {
-                moveDirection = 0;
-            } else if (keyH.dPressed) {
-                moveDirection = 1;
-            } else if (keyH.lPressed) {
-                moveDirection = 2;
-            } else if (keyH.rPressed) {
-                moveDirection = 3;
-            }
-
-            if (!collisionOn) { //checks collision (will we need this?)
-                switch (moveDirection) {
-                    case 0: y -= speed;
-                        break;
-                    case 1: y += speed;
-                        break;
-                    case 2: x -= speed;
-                        break;
-                    case 3: x += speed;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            //I assume animations will go here.
-        }
-        
-        //experimental enemy follower algorithm.
         if (x > player.x) {
             drawDirection = 2;
         } else {
             drawDirection = 3;
         }
         int sped = 10;
-        if (Math.abs(Math.abs(x - player.x) - Math.abs(y - player.y)) > 100) {
-            // sped = 10;
-        }
         if (Math.abs(Math.abs(x - player.x) - Math.abs(y - player.y)) < 10) {
             x += (player.x - x) / sped;
             y += (player.y - y) / sped;
@@ -140,14 +106,12 @@ public class King extends Entity {
      * Draws elements.
      */
     public void draw(Graphics2D g2) {
-        
         BufferedImage image = null;
-
-        //checks which frame of the animation, and direction for King.
         image = sprite[drawDirection][spriteNum];
-
         g2.drawImage(image, x - spriteWidth / 2, y - spriteHeight / 2,
             spriteWidth, spriteHeight, null);
+
+        drawHealthBar(g2);
     }
 
     /**
@@ -157,6 +121,8 @@ public class King extends Entity {
     public void spawn() {
         combat = true;
         gp.playMusic(3);
+        health = maxHealth;
+        lastHitTime = 0;
     }
 
     /**
@@ -167,5 +133,16 @@ public class King extends Entity {
         combat = false;
         gp.stopSound();
     }
-    
+
+    private void drawHealthBar(Graphics2D g2) {
+        int barW = spriteWidth;
+        int barH = 4;
+        int bx = x - barW / 2;
+        int by = y - spriteHeight / 2 - 8;
+        g2.setColor(new java.awt.Color(30, 30, 30));
+        g2.fillRect(bx - 1, by - 1, barW + 2, barH + 2);
+        g2.setColor(new java.awt.Color(200, 30, 30));
+        int w = (int) (barW * (health / (double) maxHealth));
+        g2.fillRect(bx, by, Math.max(0, w), barH);
+    }
 }

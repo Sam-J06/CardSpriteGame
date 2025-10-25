@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import javax.swing.JPanel;
 
@@ -43,6 +44,8 @@ public class GamePanel extends JPanel implements Runnable {
     private long lastTimerUpdate = System.currentTimeMillis();
     private boolean timerRunning = true;
     private boolean timerWarningPlayed = false;
+
+    private int playerDamage = 1;
 
     /**
      * Sets up the game window and input.
@@ -136,9 +139,31 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (king.combat) {
             king.update();
+            handleSlashDamage(king);
+            if (!king.isAlive()) {
+                king.despawn();
+            }
         }
         if (queen.combat) {
             queen.update();
+            handleSlashDamage(queen);
+            if (!queen.isAlive()) {
+                queen.despawn();
+            }
+        }
+    }
+
+    private void handleSlashDamage(entity.Entity enemy) {
+        if (!player.isSlashing()) {
+
+            return;
+        }
+        Rectangle sBox = player.getSwordHitbox();
+        if (sBox.width <= 0 || sBox.height <= 0) {
+            return;
+        }    
+        if (sBox.intersects(enemy.getBounds())) {
+            enemy.takeDamage(playerDamage);
         }
     }
 
@@ -161,6 +186,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         drawTimer(g2);
         drawPoints(g2);
+        drawPlayerHPText(g2);
 
         g2.dispose();
     }
@@ -229,6 +255,12 @@ public class GamePanel extends JPanel implements Runnable {
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("Times New Roman", Font.BOLD, 20));
         g2.drawString("Points: " + points, w - 150, 40);
+    }
+
+    private void drawPlayerHPText(Graphics2D g2) {
+        g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+        g2.drawString("HP: " + player.health + "/" + player.maxHealth, 12, 35);
     }
 
     /**

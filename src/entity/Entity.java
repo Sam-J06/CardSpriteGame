@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 /**
@@ -20,9 +21,40 @@ public class Entity {
     //j is different sprites
 
     public int spriteCounter = 0;
-    public int spriteNum = 0;   //Denotes which particular sprite (/frame)
+    public int spriteNum = 0;   
 
-    public boolean collisionOn = false; //To add
+    public boolean collisionOn = false; 
 
+    
+    public int maxHealth = 5;
+    public int health = 5;
+    public int spriteWidth = 0;
+    public int spriteHeight = 0;
+    public long lastHitTime = 0;
+    public int invulnMs = 500;
 
+    public boolean isAlive() {
+        return health > 0;
+    }
+    /**
+    * Class that handles taking damage.
+    */
+
+    public void takeDamage(int dmg) {
+        long now = System.currentTimeMillis();
+        if (now - lastHitTime < invulnMs) {
+            return;
+        }
+        health = Math.max(0, health - dmg);
+        lastHitTime = now;
+    }
+
+    /**
+    * Class that handles the bounds for taking damage.
+    */
+    public Rectangle getBounds() {
+        int w = Math.max(1, spriteWidth);
+        int h = Math.max(1, spriteHeight);
+        return new Rectangle(x - w / 2, y - h / 2, w, h);
+    }
 }
