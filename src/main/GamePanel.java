@@ -12,6 +12,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 /**
@@ -52,6 +55,14 @@ public class GamePanel extends JPanel implements Runnable {
     private long lastContactHitTime = 0;
     private int contactIframesMs = 1600;
 
+    // Game over state and "Try Again" button
+    private boolean gameOver = false;
+    private Rectangle tryAgainBtn = new Rectangle(0, 0, 0, 0);
+    private boolean prevMousePressed = false;
+
+    // Background image
+    private BufferedImage backgroundImage;
+
     /**
      * Sets up the game window and input.
      */
@@ -62,6 +73,13 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);
         this.addMouseListener(keyH);
         this.setFocusable(true);
+
+        // Load arena background image
+        try {
+            backgroundImage = ImageIO.read(getClass().getResourceAsStream("/res/background.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -100,7 +118,19 @@ public class GamePanel extends JPanel implements Runnable {
      * Updates player, cards, enemies, and timer.
      */
     public void update() {
+
+        // Handle button click (edge-trigger) when game over
+        if (gameOver) {
+            boolean justClicked = keyH.mousePressed && !prevMousePressed;
+            prevMousePressed = keyH.mousePressed;
+            if (justClicked && tryAgainBtn.contains(keyH.mouseX, keyH.mouseY)) {
+                resetGame();
+            }
+            return;
+        }
+
         if (!timerRunning) {
+            gameOver = true;
             return;
         }
 
@@ -117,6 +147,7 @@ public class GamePanel extends JPanel implements Runnable {
             if (timeLeft <= 0) {
                 timerRunning = false;
                 playSFX(5);
+                gameOver = true;
             }
         }
 
@@ -158,6 +189,14 @@ public class GamePanel extends JPanel implements Runnable {
                 queen.despawn();
             }
         }
+
+        // Check player death → game over
+        if (!player.isAlive()) {
+            timerRunning = false;
+            gameOver = true;
+        }
+
+        prevMousePressed = keyH.mousePressed;
     }
 
     /**
@@ -165,7 +204,6 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void handleSlashDamage(entity.Entity enemy) {
         if (!player.isSlashing()) {
-
             return;
         }
         Rectangle sBox = player.getSwordHitbox();
@@ -185,13 +223,14 @@ public class GamePanel extends JPanel implements Runnable {
         Rectangle eBox = enemy.getBounds();
 
         if (!pBox.intersects(eBox)) {
-            return;  
-        } 
+            return;
+        }
 
         long now = System.currentTimeMillis();
         if (now - lastContactHitTime < contactIframesMs) {
             return;
         }
+
         long prevHit = player.lastHitTime;
         player.takeDamage(enemyTouchDamage);
         boolean actuallyHit = (player.lastHitTime != prevHit);
@@ -225,7 +264,6 @@ public class GamePanel extends JPanel implements Runnable {
             if (player.y > maxY) {
                 player.y = maxY;
             }
-
         }
     }
 
@@ -235,6 +273,11 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+
+        
+        if (backgroundImage != null) {
+            g2.drawImage(backgroundImage, 0, 0, w, h, null);
+        }
 
         cards.draw(g2);
         player.draw(g2);
@@ -249,6 +292,10 @@ public class GamePanel extends JPanel implements Runnable {
         drawTimer(g2);
         drawPoints(g2);
         drawPlayerHPText(g2);
+
+        if (gameOver) {
+            drawGameOverOverlay(g2);
+        }
 
         g2.dispose();
     }
@@ -322,7 +369,90 @@ public class GamePanel extends JPanel implements Runnable {
     private void drawPlayerHPText(Graphics2D g2) {
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-        
+        g2.drawString("HP: " + player.health + "/" + player.maxHealth, 12, 35);
+    }
+
+    /**
+     * Draws the Game Over overlay and "Try Again" button.
+     */
+    private void drawGameOverOverlay(Graphics2D g2) {
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Dims background
+        g2.setColor(new Color(0, 0, 0, 120));
+        g2.fillRect(0, 0, w, h);
+
+        // Button 
+        int btnW = 180;
+        int btnH = 60;
+        int cx = w / 2;
+        int cy = h / 2 + 10;
+        int bx = cx - btnW / 2;
+        int by = cy - btnH / 2;
+        tryAgainBtn.setBounds(bx, by, btnW, btnH);
+
+        // Button 
+        Color woodBrown = new Color(102, 51, 0);
+        Color woodHighlight = new Color(153, 102, 51);
+        Color woodInner = new Color(204, 153, 102);
+
+        g2.setColor(woodBrown);
+        g2.fillRoundRect(bx - 4, by - 4, btnW + 8, btnH + 8, 14, 14);
+        g2.setColor(woodHighlight);
+        g2.setStroke(new BasicStroke(4));
+        g2.drawRoundRect(bx - 4, by - 4, btnW + 8, btnH + 8, 14, 14);
+        g2.setColor(woodInner);
+        g2.fillRoundRect(bx, by, btnW, btnH, 10, 10);
+
+        g2.setColor(new Color(80, 50, 20));
+        int spikeCount = 16;
+        int pad = 8;
+        for (int i = 0; i < spikeCount; i++) {
+            double t = (2 * Math.PI / spikeCount) * i;
+            int rx = cx + (int) (Math.cos(t) * (btnW / 2 + pad));
+            int ry = cy + (int) (Math.sin(t) * (btnH / 2 + pad));
+            int ix = cx + (int) (Math.cos(t) * (btnW / 2));
+            int iy = cy + (int) (Math.sin(t) * (btnH / 2));
+            g2.setStroke(new BasicStroke(2));
+            g2.drawLine(ix, iy, rx, ry);
+        }
+
+        g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Times New Roman", Font.BOLD, 22));
+        String label = "Try Again";
+        int sw = g2.getFontMetrics().stringWidth(label);
+        int sh = g2.getFontMetrics().getAscent();
+        g2.drawString(label, cx - sw / 2, cy + sh / 3);
+
+        g2.setFont(new Font("Times New Roman", Font.BOLD, 28));
+        g2.setColor(Color.BLACK);
+        String msg = (timeLeft <= 0) ? "Time's Up!" : "Jester Down!";
+        int mw = g2.getFontMetrics().stringWidth(msg);
+        g2.drawString(msg, cx - mw / 2, by - 18);
+    }
+
+    /**
+     * Resets everything for a new game.
+     */
+    private void resetGame() {
+        stopSound();
+        timeLeft = 60;
+        lastTimerUpdate = System.currentTimeMillis();
+        timerRunning = true;
+        timerWarningPlayed = false;
+        points = 0;
+        player.health = player.maxHealth;
+        player.setDefaultValues();
+        player.lastHitTime = 0;
+        if (king.combat) {
+            king.despawn();
+        }
+        if (queen.combat) {
+            queen.despawn();
+        }
+        cards.setupCards();
+        lastContactHitTime = 0;
+        gameOver = false;
     }
 
     /**

@@ -73,7 +73,7 @@ public class King extends Entity {
 
         drawDirection = (x > player.x) ? 2 : 3;
 
-        int sped = 10; // lower is faster due to division
+        int sped = 10; 
         if (Math.abs(Math.abs(x - player.x) - Math.abs(y - player.y)) < 10) {
             x += (player.x - x) / sped;
             y += (player.y - y) / sped;
@@ -83,6 +83,9 @@ public class King extends Entity {
             y += (player.y - y) / sped;
         }
     }
+    /**
+    * Draws the king.
+    */
 
     public void draw(Graphics2D g2) {
         BufferedImage image = sprite[drawDirection][spriteNum];
@@ -91,7 +94,7 @@ public class King extends Entity {
         drawHealthBar(g2);
     }
 
-    /** Enter combat and reset HP/i-frames; start music. */
+    /** Enter combat and start music. */
     public void spawn() {
         combat = true;
         gp.playMusic(3);

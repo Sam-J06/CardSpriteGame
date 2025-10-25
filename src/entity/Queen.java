@@ -108,6 +108,9 @@ public class Queen extends Entity {
         lastHitTime = 0;
         setDefaultValues();
     }
+    /**
+    * Handles despawn for the queen.
+    */
 
     public void despawn() {
         combat = false;

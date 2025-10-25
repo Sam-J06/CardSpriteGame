@@ -5,11 +5,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-
 /**
-* This class handles the keys for the game.
-*/    
-
+ * Handles keyboard and mouse input.
+ */
 public class KeyHandler implements KeyListener, MouseListener {
 
     //wasd
@@ -32,6 +30,10 @@ public class KeyHandler implements KeyListener, MouseListener {
 
     // true only while left mouse button is held
     public boolean mousePressed;
+
+    // mouse position for click handling (used for Try Again button)
+    public int mouseX;
+    public int mouseY;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -133,6 +135,8 @@ public class KeyHandler implements KeyListener, MouseListener {
         
         if (e.getButton() == MouseEvent.BUTTON1) {
             mousePressed = true;
+            mouseX = e.getX();
+            mouseY = e.getY();
         }
     }
 
@@ -141,6 +145,8 @@ public class KeyHandler implements KeyListener, MouseListener {
         
         if (e.getButton() == MouseEvent.BUTTON1) {
             mousePressed = false;
+            mouseX = e.getX();
+            mouseY = e.getY();
         }
     }
 
