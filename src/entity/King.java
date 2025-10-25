@@ -7,28 +7,21 @@ import main.GamePanel;
 import main.KeyHandler;
 
 /**
- * All player information and methods.
+ * King enemy.
  */
 public class King extends Entity {
 
     GamePanel gp;
     KeyHandler keyH;
 
-    public int x;
-    public int y;
-
-    //the dimension of the sprites.
-    public int spriteHeight;
-    public int spriteWidth;
-
     public boolean combat = false;
 
-    //player imported in order to check its x, y.
+    
     Player player;
-
     /**
-     * Constructor.
-     */
+    * King enemy.
+    */
+
     public King(Player player, GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -36,7 +29,6 @@ public class King extends Entity {
 
         spriteWidth = 27 * gp.scale;
         spriteHeight = 55 * gp.scale;
-        
 
         maxHealth = 6;
         health = 6;
@@ -44,21 +36,19 @@ public class King extends Entity {
         setDefaultValues();
         getPlayerImage();
     }
-
     /**
-     * sets default values.
-     */
+    * method sets some values for the King enemy.
+    */  
+
     public void setDefaultValues() {
-        x = 100;
+        x = gp.w - 100;
         y = 100;
         speed = gp.w / 100;
         moveDirection = 0;
         drawDirection = 2;
     }
 
-    /**
-     * imports sprites from resource file.
-     */
+    /** Load sprites. */
     public void getPlayerImage() {
         try {
             for (int i = 2; i < 4; i++) {
@@ -72,26 +62,18 @@ public class King extends Entity {
         }
     }
 
-    /**
-     * Updates direction, speed, and player sprite. Gets called in GamePanel class.
-     */
+    /** Track the player. */
     public void update() {
 
         spriteCounter++;
         if (spriteCounter > 5) {
-            spriteNum++;
-            if (spriteNum == 4) {
-                spriteNum = 0;
-            }
+            spriteNum = (spriteNum + 1) % 4;
             spriteCounter = 0;
         }
 
-        if (x > player.x) {
-            drawDirection = 2;
-        } else {
-            drawDirection = 3;
-        }
-        int sped = 10;
+        drawDirection = (x > player.x) ? 2 : 3;
+
+        int sped = 10; // lower is faster due to division
         if (Math.abs(Math.abs(x - player.x) - Math.abs(y - player.y)) < 10) {
             x += (player.x - x) / sped;
             y += (player.y - y) / sped;
@@ -102,33 +84,23 @@ public class King extends Entity {
         }
     }
 
-    /**
-     * Draws elements.
-     */
     public void draw(Graphics2D g2) {
-        BufferedImage image = null;
-        image = sprite[drawDirection][spriteNum];
+        BufferedImage image = sprite[drawDirection][spriteNum];
         g2.drawImage(image, x - spriteWidth / 2, y - spriteHeight / 2,
             spriteWidth, spriteHeight, null);
-
         drawHealthBar(g2);
     }
 
-    /**
-     * Sets king into combt which updates and draws him in GamePanel.
-     * Starts playing music.
-     */
+    /** Enter combat and reset HP/i-frames; start music. */
     public void spawn() {
         combat = true;
         gp.playMusic(3);
         health = maxHealth;
         lastHitTime = 0;
+        setDefaultValues();
     }
 
-    /**
-     * Sets king out of combat.
-     * Stops music.
-     */
+    /** Leave combat and stop music. */
     public void despawn() {
         combat = false;
         gp.stopSound();

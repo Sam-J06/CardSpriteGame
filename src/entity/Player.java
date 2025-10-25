@@ -15,12 +15,6 @@ public class Player extends Entity {
     GamePanel gp;
     KeyHandler keyH;
 
-    public int x;
-    public int y;
-
-    public int spriteHeight;
-    public int spriteWidth;
-
     private BufferedImage swordImage;
     private boolean showSword = false;
     private boolean swordWasShowing = false;
@@ -35,9 +29,12 @@ public class Player extends Entity {
         spriteWidth = 17 * gp.scale;
         spriteHeight = 25 * gp.scale;
        
+        // Increase base health so Jester lasts longer
+        maxHealth = 8;
+        health = 8;
 
-        maxHealth = 5;
-        health = 5;
+        // Increase invulnerability window so repeated touch hits land less often
+        invulnMs = 1500;
 
         setDefaultValues();
         getPlayerImage();
@@ -99,6 +96,8 @@ public class Player extends Entity {
                 spriteNum = 0;
             }
             spriteCounter = 0;
+        } else {
+            spriteCounter++;
         }
 
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
@@ -178,6 +177,10 @@ public class Player extends Entity {
     public boolean isSlashing() {
         return showSword;
     }
+
+    /**
+    * Hitbox for the queen.
+    */   
 
     public Rectangle getSwordHitbox() {
         if (!showSword || swordImage == null) {

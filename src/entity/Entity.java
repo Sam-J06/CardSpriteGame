@@ -16,16 +16,12 @@ public class Entity {
     public int moveDirection;
     public int drawDirection;
 
-    //The array sprite[i][j] are all the sprites where
-    //i is direction (0 = up, 1 = down, 2 = left, 3 = right)
-    //j is different sprites
-
+    // sprite[i][j]: i=dir (0=up,1=down,2=left,3=right); j=frame 0..3
     public int spriteCounter = 0;
-    public int spriteNum = 0;   
+    public int spriteNum = 0;
 
-    public boolean collisionOn = false; 
+    public boolean collisionOn = false;
 
-    
     public int maxHealth = 5;
     public int health = 5;
     public int spriteWidth = 0;
@@ -36,10 +32,8 @@ public class Entity {
     public boolean isAlive() {
         return health > 0;
     }
-    /**
-    * Class that handles taking damage.
-    */
 
+    /** Take damage with invulnerability frames. */
     public void takeDamage(int dmg) {
         long now = System.currentTimeMillis();
         if (now - lastHitTime < invulnMs) {
@@ -49,9 +43,7 @@ public class Entity {
         lastHitTime = now;
     }
 
-    /**
-    * Class that handles the bounds for taking damage.
-    */
+    /** Bounds used for combat collisions. */
     public Rectangle getBounds() {
         int w = Math.max(1, spriteWidth);
         int h = Math.max(1, spriteHeight);

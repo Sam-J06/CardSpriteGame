@@ -46,6 +46,11 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean timerWarningPlayed = false;
 
     private int playerDamage = 1;
+    private int enemyTouchDamage = 1;
+
+    // Extra i-frames just for touch damage so the Jester doesn't die too fast from constant overlap
+    private long lastContactHitTime = 0;
+    private int contactIframesMs = 1600;
 
     /**
      * Sets up the game window and input.
@@ -140,6 +145,7 @@ public class GamePanel extends JPanel implements Runnable {
         if (king.combat) {
             king.update();
             handleSlashDamage(king);
+            handleEnemyTouchDamage(king);
             if (!king.isAlive()) {
                 king.despawn();
             }
@@ -147,12 +153,16 @@ public class GamePanel extends JPanel implements Runnable {
         if (queen.combat) {
             queen.update();
             handleSlashDamage(queen);
+            handleEnemyTouchDamage(queen);
             if (!queen.isAlive()) {
                 queen.despawn();
             }
         }
     }
 
+    /**
+     * Handles sword damage to enemies when slashing.
+     */
     private void handleSlashDamage(entity.Entity enemy) {
         if (!player.isSlashing()) {
 
@@ -164,6 +174,58 @@ public class GamePanel extends JPanel implements Runnable {
         }    
         if (sBox.intersects(enemy.getBounds())) {
             enemy.takeDamage(playerDamage);
+        }
+    }
+
+    /**
+     * Handles touch damage when player collides with an enemy.
+     */
+    private void handleEnemyTouchDamage(entity.Entity enemy) {
+        Rectangle pBox = player.getBounds();
+        Rectangle eBox = enemy.getBounds();
+
+        if (!pBox.intersects(eBox)) {
+            return;  
+        } 
+
+        long now = System.currentTimeMillis();
+        if (now - lastContactHitTime < contactIframesMs) {
+            return;
+        }
+        long prevHit = player.lastHitTime;
+        player.takeDamage(enemyTouchDamage);
+        boolean actuallyHit = (player.lastHitTime != prevHit);
+
+        if (actuallyHit) {
+            lastContactHitTime = now;
+            playSFX(6);
+
+            int dx = player.x - enemy.x;
+            int dy = player.y - enemy.y;
+            int dist = Math.max(1, (int) Math.hypot(dx, dy));
+            int kb = Math.max(2, scale * 2);
+            int kx = Math.round(kb * dx / (float) dist);
+            int ky = Math.round(kb * dy / (float) dist);
+            player.x += kx;
+            player.y += ky;
+
+            int minX = player.spriteWidth / 2;
+            int maxX = w - player.spriteWidth / 2;
+            int minY = player.spriteHeight / 2;
+            int maxY = h - player.spriteHeight / 2;
+            if (player.x < minX) {
+                player.x = minX;
+            }
+            if (player.x > maxX) {
+                player.x = maxX;
+            }
+            if (player.y < minY) {
+                player.y = minY;
+            }
+            if (player.y > maxY) {
+                player.y = maxY;
+            }
+
         }
     }
 
@@ -260,7 +322,7 @@ public class GamePanel extends JPanel implements Runnable {
     private void drawPlayerHPText(Graphics2D g2) {
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-        g2.drawString("HP: " + player.health + "/" + player.maxHealth, 12, 35);
+        
     }
 
     /**
