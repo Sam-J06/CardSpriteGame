@@ -152,22 +152,12 @@ public class GamePanel extends JPanel implements Runnable {
                 timerRunning = false;
                 playSFX(5);
                 gameOver = true;
-                //TODO: stop enemy music
             }
         }
 
         if (keyH.escapePressed) {
-            System.exit(0);
-        }
-        if (keyH.cPressed && !king.combat) {
-            king.spawn();
-        } else if (keyH.cPressed) {
-            king.despawn();
-        }
-        if (keyH.mPressed && !queen.combat) {
-            queen.spawn();
-        } else if (keyH.mPressed) {
-            queen.despawn();
+            resetGame();
+            keyH.escapePressed = false;
         }
 
         cards.update(player);
@@ -435,7 +425,7 @@ public class GamePanel extends JPanel implements Runnable {
      * Resets everything for a new game.
      */
     private void resetGame() {
-        stopSound();
+        // stopSound();
         timeLeft = 60;
         lastTimerUpdate = System.currentTimeMillis();
         timerRunning = true;
@@ -450,7 +440,11 @@ public class GamePanel extends JPanel implements Runnable {
         if (queen.combat) {
             queen.despawn();
         }
-        cards.setupCards();
+        // cards.setupCards();
+        cards.shuffleCards();
+        cards.previewCards();
+        cards.card1Select = -1;
+        cards.card2Select = -1;
         lastContactHitTime = 0;
         gameOver = false;
     }

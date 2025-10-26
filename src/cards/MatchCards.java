@@ -26,8 +26,8 @@ public class MatchCards {
     int cardHeight;
     int rowsOfCards = 4 - 1;
     int columnsOfCards = 5 - 1;
-    int card1Select = -1;
-    int card2Select = -1;
+    public int card1Select = -1;
+    public int card2Select = -1;
     King king;
     Queen queen;
 
@@ -87,13 +87,19 @@ public class MatchCards {
         }
 
         shuffleCards();
+        previewCards();
+    }
 
-        
+    /**
+     * Gives the user a quick glance at the cards at the beggining of every round.
+     * Only lasts for 1.5 seconds.
+     */
+    public void previewCards() {
         for (Card c : cardset) {
             c.flipped = true;
         }
         showingPreview = true;
-        previewEndTime = System.currentTimeMillis() + 1500; 
+        previewEndTime = System.currentTimeMillis() + 1500;
     }
 
     /**
@@ -114,7 +120,7 @@ public class MatchCards {
             }
         }
 
-        if (waitingToFlipBack) {
+        if (waitingToFlipBack && card1Select != -1 && card2Select != -1) {
             if (System.currentTimeMillis() >= flipBackTime) {
                 System.out.println("wrong");
                 cardset.get(card1Select).flipped = false;

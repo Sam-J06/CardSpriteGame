@@ -19,14 +19,6 @@ public class KeyHandler implements KeyListener, MouseListener {
     //other
     public boolean escapePressed;
     public boolean spacePressed;
-    public boolean cPressed;
-    public boolean mPressed;
-
-    //arrow
-    public boolean uPressed;
-    public boolean dPressed;
-    public boolean lPressed;
-    public boolean rPressed;
 
     // true only while left mouse button is held
     public boolean mousePressed;
@@ -62,24 +54,6 @@ public class KeyHandler implements KeyListener, MouseListener {
         if (code == KeyEvent.VK_SPACE) {
             spacePressed = true;
         }
-        if (code == KeyEvent.VK_C) {
-            cPressed = true;
-        }
-        if (code == KeyEvent.VK_UP) {
-            uPressed = true;
-        }
-        if (code == KeyEvent.VK_DOWN) {
-            dPressed = true;
-        }
-        if (code == KeyEvent.VK_LEFT) {
-            lPressed = true;
-        }
-        if (code == KeyEvent.VK_RIGHT) {
-            rPressed = true;
-        }
-        if (code == KeyEvent.VK_M) {
-            mPressed = true;
-        }
     }
 
     @Override
@@ -104,24 +78,6 @@ public class KeyHandler implements KeyListener, MouseListener {
         }
         if (code == KeyEvent.VK_SPACE) {
             spacePressed = false;
-        }
-        if (code == KeyEvent.VK_C) {
-            cPressed = false;
-        }
-        if (code == KeyEvent.VK_UP) {
-            uPressed = false;
-        }
-        if (code == KeyEvent.VK_DOWN) {
-            dPressed = false;
-        }
-        if (code == KeyEvent.VK_LEFT) {
-            lPressed = false;
-        }
-        if (code == KeyEvent.VK_RIGHT) {
-            rPressed = false;
-        }
-        if (code == KeyEvent.VK_M) {
-            mPressed = false;
         }
     }
 
