@@ -11,7 +11,7 @@ import javax.sound.sampled.Clip;
 public class Sound {
 
     Clip clip; //A Clip is used to open Audio Files.
-    URL[] soundURL = new URL[7]; //Stores file paths of audio files.
+    URL[] soundURL = new URL[8]; //Stores file paths of audio files.
 
     /**
      * Constructor.
@@ -25,6 +25,7 @@ public class Sound {
         soundURL[4] = getClass().getResource("/res/sfx/timer.wav");
         soundURL[5] = getClass().getResource("/res/sfx/timeup.wav");
         soundURL[6] = getClass().getResource("/res/sfx/slash.wav");
+        soundURL[7] = getClass().getResource("/res/sfx/hurt.wav"); // Jester pain sound
     }
 
     /**

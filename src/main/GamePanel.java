@@ -237,7 +237,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (actuallyHit) {
             lastContactHitTime = now;
-            playSFX(6);
+            playSFX(7); // play Jester pain sound instead of slash
 
             int dx = player.x - enemy.x;
             int dy = player.y - enemy.y;
