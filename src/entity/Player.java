@@ -63,7 +63,7 @@ public class Player extends Entity {
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
                     sprite[i][j] = ImageIO.read(getClass().getResourceAsStream(
-                        "/res/jester.png"));
+                        "/res/jester_sprites/jester_" + i + "_" + j + ".PNG"));
                 }
             }
         } catch (Exception e) {
@@ -94,17 +94,17 @@ public class Player extends Entity {
         }
         swordWasShowing = showSword;
 
-        if (spriteCounter > 5) {
-            spriteNum++;
-            if (spriteNum == 4) {
-                spriteNum = 0;
-            }
-            spriteCounter = 0;
-        } else {
-            spriteCounter++;
-        }
-
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+
+            if (spriteCounter > 5) {
+                spriteNum++;
+                if (spriteNum == 4) {
+                    spriteNum = 0;
+                }
+                spriteCounter = 0;
+            } else {
+                spriteCounter++;
+            }
 
             if (keyH.upPressed) {
                 moveDirection = 0;
