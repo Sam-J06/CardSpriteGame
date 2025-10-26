@@ -34,6 +34,10 @@ public class MatchCards {
     long flipBackTime = 0;
     long flipDelay = 1000;
 
+    // New field: controls whether the preview period is active
+    private boolean showingPreview = true;
+    private long previewEndTime = 0;
+
     /**
      * Sets up the card game with sizes, input, and enemies to trigger on matches.
      */
@@ -80,12 +84,31 @@ public class MatchCards {
         }
 
         shuffleCards();
+
+        
+        for (Card c : cardset) {
+            c.flipped = true;
+        }
+        showingPreview = true;
+        previewEndTime = System.currentTimeMillis() + 1500; 
     }
 
     /**
      * Handles input and match logic.
      */
     public void update(Player player) {
+
+        
+        if (showingPreview) {
+            if (System.currentTimeMillis() >= previewEndTime) {
+                for (Card c : cardset) {
+                    c.flipped = false;
+                }
+                showingPreview = false;
+            } else {
+                return; // Skip input until preview ends
+            }
+        }
 
         if (waitingToFlipBack) {
             if (System.currentTimeMillis() >= flipBackTime) {
@@ -173,7 +196,7 @@ public class MatchCards {
      */
     public void draw(Graphics2D g2) {
         for (int i = 0; i < numberOfCards; i++) {
-            BufferedImage image = null;
+            BufferedImage image;
             if (cardset.get(i).flipped) {
                 image = cardset.get(i).cardImage;
             } else {
@@ -204,5 +227,4 @@ public class MatchCards {
             column++;
         }
     }
-
 }

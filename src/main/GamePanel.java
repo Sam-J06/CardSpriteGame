@@ -425,8 +425,8 @@ public class GamePanel extends JPanel implements Runnable {
         g2.drawString(label, cx - sw / 2, cy + sh / 3);
 
         g2.setFont(new Font("Times New Roman", Font.BOLD, 28));
-        g2.setColor(Color.BLACK);
-        String msg = (timeLeft <= 0) ? "Time's Up!" : "Jester Down!";
+        g2.setColor(Color.WHITE);
+        String msg = (timeLeft <= 0) ? "Time's Up!" : "";
         int mw = g2.getFontMetrics().stringWidth(msg);
         g2.drawString(msg, cx - mw / 2, by - 18);
     }
