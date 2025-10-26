@@ -76,7 +76,7 @@ public class Queen extends Entity {
 
         drawDirection = (x > player.x) ? 2 : 3;
 
-        int sped = 40;
+        int sped = 30;
         if (Math.abs(Math.abs(x - player.x) - Math.abs(y - player.y)) < 10) {
             x += (player.x - x) / sped;
             y += (player.y - y) / sped;

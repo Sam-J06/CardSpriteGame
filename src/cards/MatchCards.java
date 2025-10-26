@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.KeyHandler;
+import main.Sound;
 
 /**
  * Handles the card-matching.
@@ -33,6 +34,8 @@ public class MatchCards {
     boolean waitingToFlipBack = false;
     long flipBackTime = 0;
     long flipDelay = 1000;
+
+    Sound sound = new Sound();
 
     // New field: controls whether the preview period is active
     private boolean showingPreview = true;
@@ -105,6 +108,7 @@ public class MatchCards {
                     c.flipped = false;
                 }
                 showingPreview = false;
+                playSFX(1);
             } else {
                 return; // Skip input until preview ends
             }
@@ -115,7 +119,7 @@ public class MatchCards {
                 System.out.println("wrong");
                 cardset.get(card1Select).flipped = false;
                 cardset.get(card2Select).flipped = false;
-                gp.playSFX(1);
+                playSFX(1);
                 card1Select = -1;
                 card2Select = -1;
                 waitingToFlipBack = false;
@@ -136,13 +140,13 @@ public class MatchCards {
                         card1Select = i;
                         cardset.get(i).flipped = true;
                         System.out.println("card 1 selected");
-                        gp.playSFX(0);
+                        playSFX(0);
 
                     } else if (card2Select == -1) {
                         card2Select = i;
                         cardset.get(i).flipped = true;
                         System.out.println("card 2 selected");
-                        gp.playSFX(0);
+                        playSFX(0);
 
                         if (cardset.get(card1Select).pattern != cardset.get(card2Select).pattern) {
                             waitingToFlipBack = true;
@@ -174,6 +178,7 @@ public class MatchCards {
                     }
                 }
             }
+            keyH.spacePressed = false;
         }
     }
 
@@ -226,5 +231,13 @@ public class MatchCards {
                     + cardset.get(i).pattern + " to column " + column + " row " + row);
             column++;
         }
+    }
+
+    /**
+     * Plays a sound effect.
+     */
+    public void playSFX(int i) {
+        sound.setFile(i);
+        sound.play();
     }
 }

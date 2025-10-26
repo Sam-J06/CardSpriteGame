@@ -51,6 +51,8 @@ public class GamePanel extends JPanel implements Runnable {
     private int playerDamage = 1;
     private int enemyTouchDamage = 1;
 
+    public boolean combat;
+
     // Extra i-frames just for touch damage so the Jester doesn't die too fast from constant overlap
     private long lastContactHitTime = 0;
     private int contactIframesMs = 1600;
@@ -119,6 +121,8 @@ public class GamePanel extends JPanel implements Runnable {
      */
     public void update() {
 
+        combat = king.combat || queen.combat;
+
         // Handle button click (edge-trigger) when game over
         if (gameOver) {
             boolean justClicked = keyH.mousePressed && !prevMousePressed;
@@ -148,12 +152,8 @@ public class GamePanel extends JPanel implements Runnable {
                 timerRunning = false;
                 playSFX(5);
                 gameOver = true;
+                //TODO: stop enemy music
             }
-        }
-
-        if (points == 8) {
-            playSFX(2);
-            points = 0;
         }
 
         if (keyH.escapePressed) {
@@ -237,7 +237,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (actuallyHit) {
             lastContactHitTime = now;
-            playSFX(7); // play Jester pain sound instead of slash
+            player.playHurtSFX();
 
             int dx = player.x - enemy.x;
             int dy = player.y - enemy.y;

@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.KeyHandler;
+import main.Sound;
 
 /**
  * Handles the player character, movement, and sword display.
@@ -18,6 +19,8 @@ public class Player extends Entity {
     private BufferedImage swordImage;
     private boolean showSword = false;
     private boolean swordWasShowing = false;
+
+    Sound sound = new Sound();
 
     /**
     * Handles the player character and sword display.
@@ -80,13 +83,14 @@ public class Player extends Entity {
     }
 
     /**
-    * Shows the sword while the LEFT MOUSE BUTTON is held.
+    * Shows the sword while the Space Bar is held.
     */
     public void update() {
-        showSword = keyH.mousePressed;
+        showSword = keyH.spacePressed && gp.combat;
 
         if (showSword && !swordWasShowing) {
-            gp.playSFX(6);
+            playSFX(6);
+            keyH.spacePressed = false;
         }
         swordWasShowing = showSword;
 
@@ -211,5 +215,17 @@ public class Player extends Entity {
         g2.setColor(new java.awt.Color(180, 0, 0));
         int w = (int) (barW * (health / (double) maxHealth));
         g2.fillRect(bx, by, Math.max(0, w), barH);
+    }
+
+    /**
+     * Plays a sound effect.
+     */
+    public void playSFX(int i) {
+        sound.setFile(i);
+        sound.play();
+    }
+
+    public void playHurtSFX() {
+        playSFX(7);
     }
 }
